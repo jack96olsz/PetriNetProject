@@ -4,25 +4,45 @@ import java.util.Arrays;
 import java.util.Scanner;
 
 public class UserInput {
-	private Scanner scan;
-	private int places;
-	private int transitions;
-	private String input;
-	private String output;
-	private int[] initialMarking;
+	private Scanner scan; 			// For scanning user input
+	private int places;				// # of places entered by user
+	private int transitions;		// # of transitions entered by user
+	private String input;			// (Not used yet)
+	private String output;			// (Not used yet)
+	private int[] initialMarking;	// Marking entered by user
 	
 	public UserInput(){
 		scan = new Scanner(System.in);
+		places = 1;
+		transitions = 0;
 	}
 	
 	public String getInput(){
-		String outputString = "";
+		String outputString = "";	// String for summary of input
 		
+		// Get input from user
 		System.out.println("Input Petri Net information");
-		System.out.println("Enter number of places:");
-		places = scan.nextInt();
-		System.out.println("Enter number of transitions:");
-		transitions = scan.nextInt();
+		
+		// Ask for user input until a valid number is entered
+		while (places <= 1){
+			System.out.println("Enter a number of places greater than 1:");
+			if(scan.hasNextInt()){
+				places = scan.nextInt();
+			}
+			else {
+				scan.next();
+			}
+		}
+		
+		while (transitions <= 0){
+			System.out.println("Enter a number of transitions greater than 0:");
+			if(scan.hasNextInt()){
+				transitions = scan.nextInt();
+			}
+			else {
+				scan.next();
+			}
+		}
 		initialMarking = new int[places];
 		processInput();
 		outputString = "\nPlaces: " + places + "\nTransitions: " + transitions + "\nInput: " + input + "\nOutput: " + output + "\nInitial Marking: " + Arrays.toString(initialMarking);
