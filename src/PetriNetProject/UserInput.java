@@ -1,5 +1,6 @@
 package PetriNetProject;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
 
@@ -7,9 +8,11 @@ public class UserInput {
 	private Scanner scan; 			// For scanning user input
 	private int places;				// # of places entered by user
 	private int transitions;		// # of transitions entered by user
+	Transition[] trans;
 	private String input;			// Input for all transitions
 	private String output;			// Output for all transitions
 	private int[] initialMarking;	// Marking entered by user
+	private ArrayList<int[]> reachableMarkings; // List of reachable markings
 	
 	
 	//Constructor
@@ -47,7 +50,7 @@ public class UserInput {
 	}
 	
 	public void getTransFromUser(){
-		Transition[] trans = new Transition[transitions];
+		trans = new Transition[transitions];
 		String temp = "";
 		// Loop through IO for transitions based on # of places and transitions entered by the user
 		for(int i = 1; i <= transitions; i++){
@@ -112,6 +115,30 @@ public class UserInput {
 			scan.next();
 		}
 		return answer;
+	}
+	
+	public void findReachableMarkings(){
+		//To-Do//
+			// Start with initial marking
+			// Loop through Transitions (1, 2, 3,...)
+				// Check if Transition is fireable
+					// if fireable
+						// Subtract input
+						// Add output
+						// Create Marking
+						// Check if marking already exists in reachableMarkings
+						// if marking exists 
+							// do nothing
+						// else
+							// add marking to reachableMarkings
+					// else
+						// next transition
+		
+		// need to somehow loop through entire set of possible transition combinations
+			// for example, 1 > 2 > 4 > 1 > 4 > 1 compared to 1 > 4 > 1
+			// use a tree to represent markings like in class
+			// recursion? every new marking becomes an "initialMarking" and calls the method again
+				// possibly finReachableMarkings(int[] marking)
 	}
 	/**
 	 * @return the places
