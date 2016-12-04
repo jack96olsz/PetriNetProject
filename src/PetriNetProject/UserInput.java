@@ -8,13 +8,12 @@ public class UserInput {
 	private Scanner scan; 			// For scanning user input
 	private int places;				// # of places entered by user
 	private int transitions;		// # of transitions entered by user
-	Transition[] trans;
+	Transition[] trans;				// List of transitions
 	private String input;			// Input for all transitions
 	private String output;			// Output for all transitions
 	private int[] initialMarking;	// Marking entered by user
 	private ArrayList<int[]> reachableMarkings; // List of reachable markings
-	
-	
+
 	//Constructor
 	public UserInput(){
 		scan = new Scanner(System.in);
@@ -22,6 +21,7 @@ public class UserInput {
 		transitions = 0;
 		input = "";
 		output = "";
+		reachableMarkings = new ArrayList<int[]>();
 	}
 	
 	// Get User input
@@ -45,6 +45,7 @@ public class UserInput {
 		initialMarking = new int[places]; 
 		getTransFromUser(); // Get IO for transitions and display result
 		getMarkingFromUser(); // Get Initial Marking from user and display result
+		reachableMarkings.add(initialMarking);
 		outputString = "\nPlaces: " + places + "\nTransitions: " + transitions + "\nInput: " + input + "\nOutput: " + output + "\nInitial Marking: " + Arrays.toString(initialMarking);
 		return outputString;
 	}
@@ -72,7 +73,6 @@ public class UserInput {
 			
 			//Output
 			System.out.println("Enter Output for t" + i);
-			trans[i-1] = new Transition(places);
 			temp = "t" + i + ": (";
 			for(int j = 1; j <= places; j++){
 				trans[i-1].getOutput()[j-1] = -1;
@@ -117,12 +117,21 @@ public class UserInput {
 		return answer;
 	}
 	
-	public void findReachableMarkings(){
+	public void findReachableMarkings(int[] marking){
+		for (int i = 0; i < trans.length; i++){
+			if (trans[i].isFireable(marking)){
+				marking = trans[i].subtractInput(marking);
+				marking = trans[i].addOutput(marking);
+				reachableMarkings.add(marking);
+				findReachableMarkings(marking);
+			}
+		}
+		
 		//To-Do//
 			// Start with initial marking
 			// Loop through Transitions (1, 2, 3,...)
 				// Check if Transition is fireable
-					// if fireable
+					// if (transition.isFireable())
 						// Subtract input
 						// Add output
 						// Create Marking
@@ -139,6 +148,14 @@ public class UserInput {
 			// use a tree to represent markings like in class
 			// recursion? every new marking becomes an "initialMarking" and calls the method again
 				// possibly finReachableMarkings(int[] marking)
+	}
+	
+	public void printReachableMarkings(){
+		int[] array;
+		for (int i = 0; i < reachableMarkings.size(); i++){
+			array = reachableMarkings.get(i);
+			System.out.println("M" + i + ": " + Arrays.toString(array));
+		}
 	}
 	/**
 	 * @return the places
@@ -202,6 +219,18 @@ public class UserInput {
 	public void setInitialMarking(int[] initialMarking) {
 		this.initialMarking = initialMarking;
 	}
-	
+	/**
+	 * @return the reachableMarkings
+	 */
+	public ArrayList<int[]> getReachableMarkings() {
+		return reachableMarkings;
+	}
+
+	/**
+	 * @param reachableMarkings the reachableMarkings to set
+	 */
+	public void setReachableMarkings(ArrayList<int[]> reachableMarkings) {
+		this.reachableMarkings = reachableMarkings;
+	}
 	
 }

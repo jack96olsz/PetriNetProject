@@ -1,5 +1,7 @@
 package PetriNetProject;
 
+import java.util.Arrays;
+
 public class Transition {
 	private int[] input;
 	private int[] output;
@@ -9,6 +11,29 @@ public class Transition {
 		output = new int[n];
 	}
 	
+	public boolean isFireable(int[] marking){
+		boolean status = false;
+		for (int i = 0; i < input.length; i++){
+			if (marking[i] >= input[i]){
+				status = true;
+			}
+			else return false;
+		}
+		return status;
+	}
+
+	public int[] subtractInput(int[] marking){
+		for (int i = 0; i < input.length; i++){
+			marking[i] -= input[i];
+		}
+		return marking;
+	}
+	public int[] addOutput(int[] marking){
+		for (int i = 0; i < output.length; i++){
+			marking[i] += output[i];
+		}
+		return marking;
+	}
 	/**
 	 * @return the input
 	 */
