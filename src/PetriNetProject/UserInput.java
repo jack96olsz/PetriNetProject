@@ -8,7 +8,7 @@ public class UserInput {
 	private Scanner scan; 			// For scanning user input
 	private int places;				// # of places entered by user
 	private int transitions;		// # of transitions entered by user
-	Transition[] trans;				// List of transitions
+	private Transition[] trans;		// List of transitions
 	private String input;			// Input for all transitions
 	private String output;			// Output for all transitions
 	private int[] initialMarking;	// Marking entered by user
@@ -45,7 +45,9 @@ public class UserInput {
 		initialMarking = new int[places]; 
 		getTransFromUser(); // Get IO for transitions and display result
 		getMarkingFromUser(); // Get Initial Marking from user and display result
-		reachableMarkings.add(initialMarking);
+		if(!reachableMarkings.contains(initialMarking)){
+			reachableMarkings.add(initialMarking);
+		}
 		outputString = "\nPlaces: " + places + "\nTransitions: " + transitions + "\nInput: " + input + "\nOutput: " + output + "\nInitial Marking: " + Arrays.toString(initialMarking);
 		return outputString;
 	}
@@ -74,14 +76,14 @@ public class UserInput {
 			//Output
 			System.out.println("Enter Output for t" + i);
 			temp = "t" + i + ": (";
-			for(int j = 1; j <= places; j++){
-				trans[i-1].getOutput()[j-1] = -1;
-				while(trans[i-1].getOutput()[j-1] < 0){
-					System.out.print("p" + j + ": ");
-					trans[i-1].getOutput()[j-1] = askForInt();
+			for(int k = 1; k <= places; k++){
+				trans[i-1].getOutput()[k-1] = -1;
+				while(trans[i-1].getOutput()[k-1] < 0){
+					System.out.print("p" + k + ": ");
+					trans[i-1].getOutput()[k-1] = askForInt();
 				}
-				if(j == places)	{temp += trans[i-1].getOutput()[j-1] + ")";}
-				else			{temp += trans[i-1].getOutput()[j-1] + ", ";}
+				if(k == places)	{temp += trans[i-1].getOutput()[k-1] + ")";}
+				else			{temp += trans[i-1].getOutput()[k-1] + ", ";}
 			}
 			System.out.println(temp);
 			output += temp;
@@ -118,11 +120,17 @@ public class UserInput {
 	}
 	
 	public void findReachableMarkings(int[] marking){
+		for(Transition T : trans){
+			System.out.println(Arrays.toString(T.getOutput()));
+		}
 		for (int i = 0; i < trans.length; i++){
 			if (trans[i].isFireable(marking)){
 				marking = trans[i].subtractInput(marking);
+				System.out.println("Current Output: " + Arrays.toString(trans[i].getOutput()));
 				marking = trans[i].addOutput(marking);
-				reachableMarkings.add(marking);
+				if(!reachableMarkings.contains(marking)){
+					reachableMarkings.add(marking);
+				}
 				findReachableMarkings(marking);
 			}
 		}
@@ -231,6 +239,20 @@ public class UserInput {
 	 */
 	public void setReachableMarkings(ArrayList<int[]> reachableMarkings) {
 		this.reachableMarkings = reachableMarkings;
+	}
+
+	/**
+	 * @return the trans
+	 */
+	public Transition[] getTrans() {
+		return trans;
+	}
+
+	/**
+	 * @param trans the trans to set
+	 */
+	public void setTrans(Transition[] trans) {
+		this.trans = trans;
 	}
 	
 }
