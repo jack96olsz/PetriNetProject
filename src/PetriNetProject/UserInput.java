@@ -46,7 +46,7 @@ public class UserInput {
 		initialMarking = new int[places]; 
 		getTransFromUser(); // Get IO for transitions and display result
 		getMarkingFromUser(); // Get Initial Marking from user and display result
-		reachableMarkings.add(initialMarking);
+		reachableMarkings.add(initialMarking.clone());
 		System.out.println("Add marking to reachableMarkings: " + Arrays.toString(initialMarking));
 		outputString = "\nPlaces: " + places + "\nTransitions: " + transitions + "\nInput: " + input + "\nOutput: " + output + "\nInitial Marking: " + Arrays.toString(initialMarking);
 		return outputString;
@@ -122,17 +122,17 @@ public class UserInput {
 	public void findReachableMarkings(int[] marking){
 		ArrayList<int[]> foundMarkings = new ArrayList<int[]>();
 		for (int i = 0; i < trans.length; i++){
-			currentMarking = marking;
+			currentMarking = marking.clone();
 			if (trans[i].isFireable(currentMarking)){
-				currentMarking = trans[i].subtractInput(currentMarking);
-				currentMarking = trans[i].addOutput(currentMarking);
+				currentMarking = trans[i].subtractInput(currentMarking.clone());
+				currentMarking = trans[i].addOutput(currentMarking.clone());
 				for(int j = 0; j < foundMarkings.size(); j++){
 					if(compareMarkings(foundMarkings.get(j), currentMarking)){
 						j = foundMarkings.size() - 1;
 					}
 					else if(j == foundMarkings.size()-1){
 						System.out.println("+ to found");
-						foundMarkings.add(currentMarking);
+						foundMarkings.add(currentMarking.clone());
 					}
 				}
 				for(int j = 0; j < reachableMarkings.size(); j++){
@@ -143,7 +143,7 @@ public class UserInput {
 					}
 					else if(j == reachableMarkings.size()-1){
 						System.out.println("add?");
-						reachableMarkings.add(currentMarking);
+						reachableMarkings.add(currentMarking.clone());
 						System.out.println("Add marking to reachableMarkings: " + Arrays.toString(currentMarking));
 					}
 				}
@@ -151,7 +151,7 @@ public class UserInput {
 		}
 		
 		for (int i = 0; i < foundMarkings.size(); i++){
-			findReachableMarkings(foundMarkings.get(i));
+			findReachableMarkings(foundMarkings.get(i).clone());
 		}
 		//To-Do//
 			// Start with initial marking
@@ -179,7 +179,7 @@ public class UserInput {
 	public void printReachableMarkings(){
 		int[] array;
 		for (int i = 0; i < reachableMarkings.size(); i++){
-			array = reachableMarkings.get(i);
+			array = reachableMarkings.get(i).clone();
 			System.out.println("M" + i + ": " + Arrays.toString(array));
 		}
 	}
