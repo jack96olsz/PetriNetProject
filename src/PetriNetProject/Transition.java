@@ -23,19 +23,14 @@ public class Transition {
 	}
 
 	public int[] subtractInput(int[] marking){
-		System.out.println("Sub marking" + Arrays.toString(marking));
 		for (int i = 0; i < input.length; i++){
 			marking[i] -= input[i];
-			System.out.println("Sub place " + i + ":" + marking[i]);
 		}
 		return marking;
 	}
 	public int[] addOutput(int[] marking){
-		System.out.println("Add marking" + Arrays.toString(marking));
 		for (int i = 0; i < output.length; i++){
 			marking[i] += output[i];
-			System.out.println("Output Marking " + i + ":" + Arrays.toString(output));
-			System.out.println("Add place " + i + ":" + marking[i]);
 		}
 		return marking;
 	}

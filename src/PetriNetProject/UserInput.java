@@ -12,6 +12,7 @@ public class UserInput {
 	private String input;			// Input for all transitions
 	private String output;			// Output for all transitions
 	private int[] initialMarking;	// Marking entered by user
+	private int[] currentMarking; 	// Keeps track of marking currently in use
 	private ArrayList<int[]> reachableMarkings; // List of reachable markings
 
 	//Constructor
@@ -45,9 +46,8 @@ public class UserInput {
 		initialMarking = new int[places]; 
 		getTransFromUser(); // Get IO for transitions and display result
 		getMarkingFromUser(); // Get Initial Marking from user and display result
-		if(!reachableMarkings.contains(initialMarking)){
-			reachableMarkings.add(initialMarking);
-		}
+		reachableMarkings.add(initialMarking);
+		System.out.println("Add marking to reachableMarkings: " + Arrays.toString(initialMarking));
 		outputString = "\nPlaces: " + places + "\nTransitions: " + transitions + "\nInput: " + input + "\nOutput: " + output + "\nInitial Marking: " + Arrays.toString(initialMarking);
 		return outputString;
 	}
@@ -120,21 +120,39 @@ public class UserInput {
 	}
 	
 	public void findReachableMarkings(int[] marking){
-		for(Transition T : trans){
-			System.out.println(Arrays.toString(T.getOutput()));
-		}
+		ArrayList<int[]> foundMarkings = new ArrayList<int[]>();
 		for (int i = 0; i < trans.length; i++){
-			if (trans[i].isFireable(marking)){
-				marking = trans[i].subtractInput(marking);
-				System.out.println("Current Output: " + Arrays.toString(trans[i].getOutput()));
-				marking = trans[i].addOutput(marking);
-				if(!reachableMarkings.contains(marking)){
-					reachableMarkings.add(marking);
+			currentMarking = marking;
+			if (trans[i].isFireable(currentMarking)){
+				currentMarking = trans[i].subtractInput(currentMarking);
+				currentMarking = trans[i].addOutput(currentMarking);
+				for(int j = 0; j < foundMarkings.size(); j++){
+					if(compareMarkings(foundMarkings.get(j), currentMarking)){
+						j = foundMarkings.size() - 1;
+					}
+					else if(j == foundMarkings.size()-1){
+						System.out.println("+ to found");
+						foundMarkings.add(currentMarking);
+					}
 				}
-				findReachableMarkings(marking);
+				for(int j = 0; j < reachableMarkings.size(); j++){
+					if(compareMarkings(reachableMarkings.get(j), currentMarking)){
+						System.out.println("reach mark: " + Arrays.toString(reachableMarkings.get(j)));
+						System.out.println("skip marking: " + Arrays.toString(currentMarking));
+						j = reachableMarkings.size() - 1;
+					}
+					else if(j == reachableMarkings.size()-1){
+						System.out.println("add?");
+						reachableMarkings.add(currentMarking);
+						System.out.println("Add marking to reachableMarkings: " + Arrays.toString(currentMarking));
+					}
+				}
 			}
 		}
 		
+		for (int i = 0; i < foundMarkings.size(); i++){
+			findReachableMarkings(foundMarkings.get(i));
+		}
 		//To-Do//
 			// Start with initial marking
 			// Loop through Transitions (1, 2, 3,...)
@@ -164,6 +182,15 @@ public class UserInput {
 			array = reachableMarkings.get(i);
 			System.out.println("M" + i + ": " + Arrays.toString(array));
 		}
+	}
+	
+	public boolean compareMarkings(int[] first, int[] second){
+		for (int i = 0; i < first.length; i++){
+			if(first[i] != second[i]){
+				return false; // markings are different
+			}
+		}
+		return true; // markings are the same
 	}
 	/**
 	 * @return the places
