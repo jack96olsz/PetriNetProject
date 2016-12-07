@@ -126,13 +126,20 @@ public class UserInput {
 			if (trans[i].isFireable(currentMarking)){
 				currentMarking = trans[i].subtractInput(currentMarking.clone());
 				currentMarking = trans[i].addOutput(currentMarking.clone());
-				for(int j = 0; j < foundMarkings.size(); j++){
-					if(compareMarkings(foundMarkings.get(j), currentMarking)){
-						j = foundMarkings.size() - 1;
-					}
-					else if(j == foundMarkings.size()-1){
-						System.out.println("+ to found");
-						foundMarkings.add(currentMarking.clone());
+				if(foundMarkings.size() == 0){
+					foundMarkings.add(currentMarking.clone());
+				}
+				else{
+					for(int j = 0; j < foundMarkings.size(); j++){
+						if(compareMarkings(foundMarkings.get(j), currentMarking)){
+							System.out.println("found markings: " + Arrays.toString(foundMarkings.get(j)));
+							System.out.println("skip marking: " + Arrays.toString(currentMarking));
+							j = foundMarkings.size() - 1;
+						}
+						else if(j == foundMarkings.size()-1){
+							System.out.println("+ to found");
+							foundMarkings.add(currentMarking.clone());
+						}
 					}
 				}
 				for(int j = 0; j < reachableMarkings.size(); j++){
@@ -149,9 +156,16 @@ public class UserInput {
 				}
 			}
 		}
-		
+		boolean stop = false;
 		for (int i = 0; i < foundMarkings.size(); i++){
-			findReachableMarkings(foundMarkings.get(i).clone());
+			for (int j = 0; j < foundMarkings.get(i).length; j++){
+				if (foundMarkings.get(i)[j] > 10){
+					stop = true;
+				}
+			}
+			if(!stop){
+				findReachableMarkings(foundMarkings.get(i).clone());
+			}
 		}
 		//To-Do//
 			// Start with initial marking
