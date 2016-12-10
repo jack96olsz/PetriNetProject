@@ -129,39 +129,34 @@ public class UserInput {
 				
 				for(int j = 0; j < reachableMarkings.size(); j++){
 					if(compareMarkings(reachableMarkings.get(j), currentMarking)){
-						System.out.println("reach mark: " + Arrays.toString(reachableMarkings.get(j)));
-						System.out.println("skip marking: " + Arrays.toString(currentMarking));
-						System.out.println("skip marking: " + Arrays.toString(currentMarking));
 						j = reachableMarkings.size() - 1;
 					}
 					else if(j == reachableMarkings.size()-1){
-						System.out.println("add?");
 						reachableMarkings.add(currentMarking.clone());
-						System.out.println("+ to found");
 						foundMarkings.add(currentMarking.clone());
-						System.out.println("Add marking to reachableMarkings: " + Arrays.toString(currentMarking));
 					}
 				}
 			}
 		}
+		//look through arrays to find w marking
+		// if found, replace marking with w marking
+			// but if found only has one marking then there is no way to determine it is w
+			// so if reach finds w then make that marking w in found markings too
+		
 		int[] array;
 		for(int i = 0; i < reachableMarkings.size(); i++){
 			for(int j = i + 1; j < reachableMarkings.size(); j++){
 				if(isLessThanEqual(reachableMarkings.get(i), reachableMarkings.get(j))){
-					array = reachableMarkings.get(i).clone();
-					reachableMarkings.set(i, setW(array.clone(), reachableMarkings.get(j).clone()));
+					array = reachableMarkings.get(j).clone();
+					for(int k = 0; k < foundMarkings.size(); k++){
+						if(compareMarkings(foundMarkings.get(k), array)){
+							foundMarkings.set(k, setW(array.clone(), reachableMarkings.get(i).clone()));
+						}
+					}
+					reachableMarkings.set(j, setW(array.clone(), reachableMarkings.get(i).clone()));
 				}
 			}
 		}
-		for(int i = 0; i < foundMarkings.size(); i++){
-			for(int j = i + 1; j < foundMarkings.size(); j++){
-				if(isLessThanEqual(foundMarkings.get(i), foundMarkings.get(j))){
-					array = foundMarkings.get(i).clone();
-					foundMarkings.set(i, setW(array.clone(), foundMarkings.get(j).clone()));
-				}
-			}
-		} 
-		
 		
 		// detect w markings to stop the program from searching for more of the same marking
 			// after each level, search for w
@@ -196,8 +191,8 @@ public class UserInput {
 		boolean stop = false;
 		for (int i = 0; i < foundMarkings.size(); i++){
 			for (int j = 0; j < foundMarkings.get(i).length; j++){
-				if (foundMarkings.get(i)[j] > 100){
-					System.out.print("going over 100");
+				if (foundMarkings.get(i)[j] > 10){
+					System.out.println("going over 10");
 					stop = true;
 				}
 			}

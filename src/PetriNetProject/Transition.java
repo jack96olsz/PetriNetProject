@@ -16,14 +16,14 @@ public class Transition {
 		for (int i = 0; i < input.length; i++){
 			if (marking[i] != -1){
 				if (marking[i] >= input[i]){
-				status = true;
+					status = true;
+				}
+				else {
+					return false;
 				}
 			}
 			else if (marking[i] == -1){
 				status = true;
-			}
-			else {
-				return false;
 			}
 		}
 		return status;
