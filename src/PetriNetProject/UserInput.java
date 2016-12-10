@@ -224,6 +224,7 @@ public class UserInput {
 	}
 	
 	public void printReachableMarkings(){
+		System.out.println("Reachable Markings (-1 = w):");
 		int[] array;
 		for (int i = 0; i < reachableMarkings.size(); i++){
 			array = reachableMarkings.get(i).clone();
