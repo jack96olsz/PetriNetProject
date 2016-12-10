@@ -156,6 +156,45 @@ public class UserInput {
 				}
 			}
 		}
+		int[] array;
+		for(int i = 0; i < reachableMarkings.size(); i++){
+			for(int j = i + 1; j < reachableMarkings.size(); j++){
+				if(isLessThanEqual(reachableMarkings.get(i), reachableMarkings.get(j))){
+					array = reachableMarkings.get(i).clone();
+					reachableMarkings.set(i, setW(array.clone(), reachableMarkings.get(j).clone()));
+				}
+			}
+		}
+		for(int i = 0; i < foundMarkings.size(); i++){
+			for(int j = i + 1; j < foundMarkings.size(); j++){
+				if(isLessThanEqual(foundMarkings.get(i), foundMarkings.get(j))){
+					array = foundMarkings.get(i).clone();
+					foundMarkings.set(i, setW(array.clone(), foundMarkings.get(j).clone()));
+				}
+			}
+		} 
+		
+		
+		// detect w markings to stop the program from searching for more of the same marking
+			// after each level, search for w
+				// if (compare every marking) == islessthan or equal
+					// then test for w conditions
+						// if true
+							// set w marking (maybe make the w marking a negative number)
+								// set w for reachable markings and found markings to stop infinite loop
+						// else
+							// continue to next marking
+
+		
+		// Testing for W
+			// if Output - Input = a marking with a positive place and no negative places then positive place = w
+				// EX:	O:(0 0 1) - I:(1 0 0) = (-1 0 1) <Normal>
+				//		O:(1 0 1) - I:(1 0 0) = (0 0 1) <w>
+		
+		
+				//		O:(0 0 1) - I:(1 0 0) = (-1 0 1)
+				// 		O:(1 1 0) - I:(0 0 1) = (1 1 -1) <w>
+		
 		boolean stop = false;
 		for (int i = 0; i < foundMarkings.size(); i++){
 			for (int j = 0; j < foundMarkings.get(i).length; j++){
@@ -205,6 +244,25 @@ public class UserInput {
 			}
 		}
 		return true; // markings are the same
+	}
+	
+	public boolean isLessThanEqual(int[] first, int[] second){
+		for (int i = 0; i < first.length; i++){
+			if(!(first[i] <= second[i])){
+				return false; // first is not less than or equal to second
+			}
+		}
+		return true; // first is less than or equal to second
+	}
+	
+	public int[] setW(int[] first, int[] second){
+		for (int i = 0; i < first.length; i++){
+			first[i] -= second[i];
+			if(first[i] > 0){
+				first[i] = -1;
+			}
+		}
+		return first;
 	}
 	/**
 	 * @return the places

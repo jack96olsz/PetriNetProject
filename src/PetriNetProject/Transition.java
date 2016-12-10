@@ -14,7 +14,12 @@ public class Transition {
 	public boolean isFireable(int[] marking){
 		boolean status = false;
 		for (int i = 0; i < input.length; i++){
-			if (marking[i] >= input[i]){
+			if (marking[i] != -1){
+				if (marking[i] >= input[i]){
+				status = true;
+				}
+			}
+			else if (marking[i] == -1){
 				status = true;
 			}
 			else return false;
@@ -24,13 +29,17 @@ public class Transition {
 
 	public int[] subtractInput(int[] marking){
 		for (int i = 0; i < input.length; i++){
-			marking[i] -= input[i];
+			if (marking[i] != -1){
+				marking[i] -= input[i];
+			}
 		}
 		return marking;
 	}
 	public int[] addOutput(int[] marking){
 		for (int i = 0; i < output.length; i++){
-			marking[i] += output[i];
+			if (marking[i] != -1){
+				marking[i] += output[i];
+			}
 		}
 		return marking;
 	}
