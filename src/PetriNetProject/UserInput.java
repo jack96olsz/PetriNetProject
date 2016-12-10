@@ -126,31 +126,19 @@ public class UserInput {
 			if (trans[i].isFireable(currentMarking)){
 				currentMarking = trans[i].subtractInput(currentMarking.clone());
 				currentMarking = trans[i].addOutput(currentMarking.clone());
-				if(foundMarkings.size() == 0){
-					foundMarkings.add(currentMarking.clone());
-				}
-				else{
-					for(int j = 0; j < foundMarkings.size(); j++){
-						if(compareMarkings(foundMarkings.get(j), currentMarking)){
-							System.out.println("found markings: " + Arrays.toString(foundMarkings.get(j)));
-							System.out.println("skip marking: " + Arrays.toString(currentMarking));
-							j = foundMarkings.size() - 1;
-						}
-						else if(j == foundMarkings.size()-1){
-							System.out.println("+ to found");
-							foundMarkings.add(currentMarking.clone());
-						}
-					}
-				}
+				
 				for(int j = 0; j < reachableMarkings.size(); j++){
 					if(compareMarkings(reachableMarkings.get(j), currentMarking)){
 						System.out.println("reach mark: " + Arrays.toString(reachableMarkings.get(j)));
+						System.out.println("skip marking: " + Arrays.toString(currentMarking));
 						System.out.println("skip marking: " + Arrays.toString(currentMarking));
 						j = reachableMarkings.size() - 1;
 					}
 					else if(j == reachableMarkings.size()-1){
 						System.out.println("add?");
 						reachableMarkings.add(currentMarking.clone());
+						System.out.println("+ to found");
+						foundMarkings.add(currentMarking.clone());
 						System.out.println("Add marking to reachableMarkings: " + Arrays.toString(currentMarking));
 					}
 				}
@@ -186,7 +174,17 @@ public class UserInput {
 							// continue to next marking
 
 		
-		// Testing for W
+		// Testing for W 
+		// If there is a Marking M that is less than another marking M' then through some sequence of transitions there is an w marking
+		// Incidence Matrix and State equation show Petri Net Behavior
+		// With Marking M and M', ^M = M' - M and the ^M represents the change in tokens that must be a result of a transition firing sequence to get from M to M'
+			// We first need to find the the firing sequence and then figure out how many times that sequence must be fired to get from M to M' (even if its only once)
+				// Possibly done with an Incidence Matrix Solution
+					// find two markings that fit criteria of w
+					// find solution
+					// apply w to solution
+		
+		
 			// if Output - Input = a marking with a positive place and no negative places then positive place = w
 				// EX:	O:(0 0 1) - I:(1 0 0) = (-1 0 1) <Normal>
 				//		O:(1 0 1) - I:(1 0 0) = (0 0 1) <w>
@@ -198,7 +196,8 @@ public class UserInput {
 		boolean stop = false;
 		for (int i = 0; i < foundMarkings.size(); i++){
 			for (int j = 0; j < foundMarkings.get(i).length; j++){
-				if (foundMarkings.get(i)[j] > 10){
+				if (foundMarkings.get(i)[j] > 100){
+					System.out.print("going over 100");
 					stop = true;
 				}
 			}
@@ -248,17 +247,25 @@ public class UserInput {
 	
 	public boolean isLessThanEqual(int[] first, int[] second){
 		for (int i = 0; i < first.length; i++){
-			if(!(first[i] <= second[i])){
-				return false; // first is not less than or equal to second
+			if ((first[i] != -1) && (second[i] != -1)){
+				if(!(first[i] <= second[i])){
+					return false; // first is not less than or equal to second
+				}
+			}
+			else {
+				if(first[i] <= second[i]){
+					return false;
+				}
 			}
 		}
 		return true; // first is less than or equal to second
 	}
 	
 	public int[] setW(int[] first, int[] second){
+		int[] array = new int[first.length];
 		for (int i = 0; i < first.length; i++){
-			first[i] -= second[i];
-			if(first[i] > 0){
+			array[i] = first[i] - second[i];
+			if(array[i] > 0){
 				first[i] = -1;
 			}
 		}

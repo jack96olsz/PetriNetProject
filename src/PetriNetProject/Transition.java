@@ -22,7 +22,9 @@ public class Transition {
 			else if (marking[i] == -1){
 				status = true;
 			}
-			else return false;
+			else {
+				return false;
+			}
 		}
 		return status;
 	}
