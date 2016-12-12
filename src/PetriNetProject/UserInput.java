@@ -18,7 +18,7 @@ public class UserInput {
 	//Constructor
 	public UserInput(){
 		scan = new Scanner(System.in);
-		places = 1;
+		places = 0;
 		transitions = 0;
 		input = "";
 		output = "";
@@ -34,8 +34,8 @@ public class UserInput {
 		
 		// Ask for user input until a valid number is entered
 		// loop for number of times equal to the value of places
-		while (places <= 1){
-			System.out.println("Enter a number of places greater than 1:");
+		while (places <= 0){
+			System.out.println("Enter a number of places greater than 0:");
 			places = askForInt();
 		}
 		// loop for number of times equal to the value of transitions
