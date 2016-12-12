@@ -1,7 +1,5 @@
 package PetriNetProject;
 
-import java.util.Arrays;
-
 public class Transition {
 	private int[] input;
 	private int[] output;

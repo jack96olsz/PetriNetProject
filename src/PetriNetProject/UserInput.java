@@ -119,14 +119,19 @@ public class UserInput {
 		return answer;
 	}
 	
-	public void findReachableMarkings(int[] marking){
+	public void findReachableMarkings(int[] marking, ArrayList<Integer> path, ArrayList<int[]> history){
 		ArrayList<int[]> foundMarkings = new ArrayList<int[]>();
+		ArrayList<Integer> firedTrans = new ArrayList<Integer>();
+		history.add(marking);
+		
+		boolean hasFireable = false;
+		
 		for (int i = 0; i < trans.length; i++){
 			currentMarking = marking.clone();
 			if (trans[i].isFireable(currentMarking)){
+				hasFireable = true;
 				currentMarking = trans[i].subtractInput(currentMarking.clone());
 				currentMarking = trans[i].addOutput(currentMarking.clone());
-				
 				for(int j = 0; j < reachableMarkings.size(); j++){
 					if(compareMarkings(reachableMarkings.get(j), currentMarking)){
 						j = reachableMarkings.size() - 1;
@@ -134,9 +139,14 @@ public class UserInput {
 					else if(j == reachableMarkings.size()-1){
 						reachableMarkings.add(currentMarking.clone());
 						foundMarkings.add(currentMarking.clone());
+						firedTrans.add(i + 1);
 					}
 				}
 			}
+		}
+		if(!hasFireable){
+			System.out.println("Marking " + Arrays.toString(marking) + " is not fireable");
+			System.out.println("Path of Marking " + Arrays.toString(marking) + ": " + Arrays.toString(path.toArray()));
 		}
 		//look through arrays to find w marking
 		// if found, replace marking with w marking
@@ -144,16 +154,72 @@ public class UserInput {
 			// so if reach finds w then make that marking w in found markings too
 		
 		int[] array;
-		for(int i = 0; i < reachableMarkings.size(); i++){
-			for(int j = i + 1; j < reachableMarkings.size(); j++){
-				if(isLessThanEqual(reachableMarkings.get(i), reachableMarkings.get(j))){
-					array = reachableMarkings.get(j).clone();
+		
+		
+		for(int i = 0; i < history.size(); i++){
+			for(int j = i + 1; j < history.size(); j++){
+				if(isLessThanEqual(history.get(i), history.get(j))){
+					array = history.get(j).clone();
+					history.set(j, setW(array.clone(), history.get(i).clone()));
 					for(int k = 0; k < foundMarkings.size(); k++){
 						if(compareMarkings(foundMarkings.get(k), array)){
-							foundMarkings.set(k, setW(array.clone(), reachableMarkings.get(i).clone()));
+							foundMarkings.set(k, setW(array.clone(), history.get(i).clone()));
 						}
 					}
-					reachableMarkings.set(j, setW(array.clone(), reachableMarkings.get(i).clone()));
+					for(int k = 0; k < reachableMarkings.size(); k++){
+						if(compareMarkings(reachableMarkings.get(k), array)){
+							reachableMarkings.set(k, setW(array.clone(), history.get(i).clone()));
+						}
+					}
+				}
+			}
+		}
+		for(int i = 0; i < foundMarkings.size(); i++){
+			for(int j = 0; j < history.size(); j++){
+//				if(isLessThanEqual(foundMarkings.get(i), history.get(j))){
+//					array = history.get(j).clone();
+//					history.set(j, setW(array.clone(), history.get(i).clone()));
+//					for(int k = 0; k < foundMarkings.size(); k++){
+//						if(compareMarkings(foundMarkings.get(k), array)){
+//							foundMarkings.set(k, setW(array.clone(), history.get(i).clone()));
+//						}
+//					}
+//					for(int k = 0; k < reachableMarkings.size(); k++){
+//						if(compareMarkings(reachableMarkings.get(k), array)){
+//							reachableMarkings.set(k, setW(array.clone(), history.get(i).clone()));
+//						}
+//					}
+//				}
+				if(isLessThanEqual(history.get(j), foundMarkings.get(i))){
+					array = foundMarkings.get(i).clone();
+					foundMarkings.set(i, setW(array.clone(), history.get(j).clone()));
+					for(int k = 0; k < reachableMarkings.size(); k++){
+						if(compareMarkings(reachableMarkings.get(k), array)){
+							reachableMarkings.set(k, setW(array.clone(), history.get(j).clone()));
+						}
+					}
+				}
+			}
+		}
+		
+		for(int i = 0; i < history.size(); i++){
+			for(int j = i + 1; j < history.size(); j++){
+				if(compareMarkings(history.get(i), history.get(j))){
+					history.remove(j);
+				}
+			}
+		}
+		for(int i = 0; i < reachableMarkings.size(); i++){
+			for(int j = i + 1; j < reachableMarkings.size(); j++){
+				if(compareMarkings(reachableMarkings.get(i), reachableMarkings.get(j))){
+					reachableMarkings.remove(j);
+				}
+			}
+		}
+		for(int i = 0; i < foundMarkings.size(); i++){
+			for(int j = i + 1; j < foundMarkings.size(); j++){
+				if(compareMarkings(foundMarkings.get(i), foundMarkings.get(j))){
+					foundMarkings.remove(j);
 				}
 			}
 		}
@@ -191,13 +257,21 @@ public class UserInput {
 		boolean stop = false;
 		for (int i = 0; i < foundMarkings.size(); i++){
 			for (int j = 0; j < foundMarkings.get(i).length; j++){
-				if (foundMarkings.get(i)[j] > 10){
-					System.out.println("going over 10");
+				if (foundMarkings.get(i)[j] > 3){
+					System.out.println("going over 3");
 					stop = true;
 				}
 			}
 			if(!stop){
-				findReachableMarkings(foundMarkings.get(i).clone());
+				ArrayList<Integer> temp = new ArrayList<Integer>();
+				temp.addAll(path);
+				temp.add(firedTrans.get(i));
+				
+				//  need to add the fired transition to each marking being sent to findReachableMarkings
+					// we start with a path
+					// then we find new items for the path
+					// then need to find the next level with updated path
+				findReachableMarkings(foundMarkings.get(i).clone(), temp, history);
 			}
 		}
 		//To-Do//
@@ -224,7 +298,7 @@ public class UserInput {
 	}
 	
 	public void printReachableMarkings(){
-		System.out.println("Reachable Markings (-1 = w):");
+//		System.out.println("Reachable Markings (-1 = w):");
 		int[] array;
 		for (int i = 0; i < reachableMarkings.size(); i++){
 			array = reachableMarkings.get(i).clone();
@@ -242,29 +316,42 @@ public class UserInput {
 	}
 	
 	public boolean isLessThanEqual(int[] first, int[] second){
+//		System.out.println("First: " + Arrays.toString(first) + "\nSecond: " + Arrays.toString(second));
 		for (int i = 0; i < first.length; i++){
 			if ((first[i] != -1) && (second[i] != -1)){
 				if(!(first[i] <= second[i])){
+//					System.out.println("no");
 					return false; // first is not less than or equal to second
 				}
 			}
 			else {
-				if(first[i] <= second[i]){
+				if(first[i] < second[i]){
+//					System.out.println("no");
 					return false;
 				}
 			}
 		}
+//		System.out.println("yes");
 		return true; // first is less than or equal to second
 	}
 	
 	public int[] setW(int[] first, int[] second){
+//		System.out.println("W First: " + Arrays.toString(first) + "\nSecond: " + Arrays.toString(second));
 		int[] array = new int[first.length];
+		
 		for (int i = 0; i < first.length; i++){
-			array[i] = first[i] - second[i];
-			if(array[i] > 0){
-				first[i] = -1;
+			if ((first[i] != -1) && (second[i] != -1)){ // if neither == -1
+				array[i] = first[i] - second[i];
+//				System.out.println("difference of markins" + Arrays.toString(array));
+				if(array[i] > 0){
+					first[i] = -1;
+				}
+			}
+			else if(first[i] < second[i]){ //
+				
 			}
 		}
+//		System.out.println("new W " + Arrays.toString(first));
 		return first;
 	}
 	/**

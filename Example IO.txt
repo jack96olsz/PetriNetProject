@@ -1,0 +1,57 @@
+Input Petri Net information
+Enter a number of places greater than 0:
+3
+Enter a number of transitions greater than 0:
+3
+Enter Input for t1
+p1: 1
+p2: 0
+p3: 0
+t1: (1, 0, 0)
+Enter Output for t1
+p1: 0
+p2: 1
+p3: 0
+t1: (0, 1, 0)
+Enter Input for t2
+p1: 0
+p2: 1
+p3: 0
+t2: (0, 1, 0)
+Enter Output for t2
+p1: 1
+p2: 0
+p3: 1
+t2: (1, 0, 1)
+Enter Input for t3
+p1: 0
+p2: 1
+p3: 0
+t3: (0, 1, 0)
+Enter Output for t3
+p1: 0
+p2: 0
+p3: 1
+t3: (0, 0, 1)
+Enter initial marking
+p1: 1
+p2: 0
+p3: 0
+Initial Marking: (1, 0, 0)
+Add marking to reachableMarkings: [1, 0, 0]
+
+Places: 3
+Transitions: 3
+Input: t1: (1, 0, 0)t2: (0, 1, 0)t3: (0, 1, 0)
+Output: t1: (0, 1, 0)t2: (1, 0, 1)t3: (0, 0, 1)
+Initial Marking: [1, 0, 0]
+Marking [0, 0, -1] is not fireable
+Path of Marking [0, 0, -1]: [1, 2, 1, 3]
+Marking [0, 0, 1] is not fireable
+Path of Marking [0, 0, 1]: [1, 3]
+M0: [1, 0, 0]
+M1: [0, 1, 0]
+M2: [1, 0, -1]
+M3: [0, 0, 1]
+M4: [0, 1, -1]
+M5: [0, 0, -1]
